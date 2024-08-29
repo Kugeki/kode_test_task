@@ -44,28 +44,46 @@ const (
 	IgnoreCapitalization = 512
 )
 
-type CheckOpt func(old int) int
+type CheckConfig struct {
+	Lang    string
+	Format  string
+	Options int
+}
+
+type CheckOpt func(cfg *CheckConfig)
+
+func WithCheckLang(lang string) CheckOpt {
+	return func(cfg *CheckConfig) {
+		cfg.Lang = lang
+	}
+}
+
+func WithCheckFormat(format string) CheckOpt {
+	return func(cfg *CheckConfig) {
+		cfg.Format = format
+	}
+}
 
 func WithCheckIgnoreDigits() CheckOpt {
-	return func(old int) int {
-		return old | IgnoreDigits
+	return func(cfg *CheckConfig) {
+		cfg.Options |= IgnoreDigits
 	}
 }
 
 func WithCheckIgnoreURLs() CheckOpt {
-	return func(old int) int {
-		return old | IgnoreURLs
+	return func(cfg *CheckConfig) {
+		cfg.Options |= IgnoreURLs
 	}
 }
 
 func WithCheckFindRepeatWords() CheckOpt {
-	return func(old int) int {
-		return old | FindRepeatWords
+	return func(cfg *CheckConfig) {
+		cfg.Options |= FindRepeatWords
 	}
 }
 
 func WithCheckIgnoreCapitalization() CheckOpt {
-	return func(old int) int {
-		return old | IgnoreCapitalization
+	return func(cfg *CheckConfig) {
+		cfg.Options |= IgnoreCapitalization
 	}
 }

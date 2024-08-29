@@ -13,7 +13,7 @@ func TestClient_CheckText(t *testing.T) {
 	c, err := NewClient(WithTimeout(10 * time.Second))
 	require.NoError(t, err)
 
-	results, err := c.CheckText(context.Background(), "теставое зодание", "", "")
+	results, err := c.CheckText(context.Background(), "теставое зодание")
 	assert.NoError(t, err)
 	assert.Greater(t, len(results), 0)
 }

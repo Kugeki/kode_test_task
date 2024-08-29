@@ -43,7 +43,7 @@ func TestWithRoundTripper(t *testing.T) {
 		require.NotNil(t, rt.Next)
 	}
 
-	results, err := c.CheckText(context.Background(), "превет", "", "")
+	results, err := c.CheckText(context.Background(), "превет")
 	assert.NoError(t, err)
 	assert.Greater(t, len(results), 0)
 

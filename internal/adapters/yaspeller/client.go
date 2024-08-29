@@ -11,12 +11,14 @@ type Client struct {
 	client *http.Client
 
 	url string
+
+	checkCfg *CheckConfig
 }
 
 var DefaultURL = "https://speller.yandex.net/services/spellservice.json"
 
 func NewClient(opts ...ClientOpt) (*Client, error) {
-	c := &Client{}
+	c := &Client{checkCfg: &CheckConfig{}}
 
 	c.client = &http.Client{}
 	c.url = DefaultURL

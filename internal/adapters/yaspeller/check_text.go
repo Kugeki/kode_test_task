@@ -32,17 +32,12 @@ func (r *CheckTextReq) Encode() io.Reader {
 
 var CheckTextEndpoint = "checkText"
 
-func (c *Client) CheckText(ctx context.Context, text, lang, format string, opts ...CheckOpt) (domain.SpellResults, error) {
-	options := 0
-	for _, op := range opts {
-		options = op(options)
-	}
-
+func (c *Client) CheckText(ctx context.Context, text string) (domain.SpellResults, error) {
 	req := &CheckTextReq{
 		Text:    text,
-		Lang:    lang,
-		Options: options,
-		Format:  format,
+		Lang:    c.checkCfg.Lang,
+		Options: c.checkCfg.Options,
+		Format:  c.checkCfg.Format,
 	}
 
 	resp, err := c.post(ctx, CheckTextEndpoint, "application/x-www-form-urlencoded", req.Encode())
@@ -58,4 +53,10 @@ func (c *Client) CheckText(ctx context.Context, text, lang, format string, opts 
 	}
 
 	return results, nil
+}
+
+func (c *Client) AddCheckOptions(opts ...CheckOpt) {
+	for _, op := range opts {
+		op(c.checkCfg)
+	}
 }
