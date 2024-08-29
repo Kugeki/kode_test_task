@@ -25,17 +25,29 @@ func (rt *mockRT) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestWithRoundTripper(t *testing.T) {
-	rt := &mockRT{}
+	rts := make([]*mockRT, 5)
+	for i := range rts {
+		rts[i] = &mockRT{}
+	}
 
-	c, err := NewClient(WithTimeout(10*time.Second), WithRoundTripper(rt))
+	opts := make([]ClientOpt, 0, len(rts)+1)
+	opts = append(opts, WithTimeout(10*time.Second))
+	for _, rt := range rts {
+		opts = append(opts, WithRoundTripper(rt))
+	}
+
+	c, err := NewClient(opts...)
 	require.NoError(t, err)
 
-	require.NotNil(t, rt.Next)
+	for _, rt := range rts {
+		require.NotNil(t, rt.Next)
+	}
 
 	results, err := c.CheckText(context.Background(), "превет", "", "")
 	assert.NoError(t, err)
 	assert.Greater(t, len(results), 0)
 
-	assert.Equal(t, rt.Called, 1)
-
+	for _, rt := range rts {
+		assert.Equal(t, rt.Called, 1)
+	}
 }
