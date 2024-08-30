@@ -1,20 +1,12 @@
 package yaspeller
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 )
 
 type ClientOpt func(c *Client) error
-
-func WithRoundTripper(rt RoundTripper) ClientOpt {
-	return func(c *Client) error {
-		transport := c.client.Transport
-		rt.SetNext(transport)
-		c.client.Transport = rt
-		return nil
-	}
-}
 
 func WithTimeout(timeout time.Duration) ClientOpt {
 	return func(c *Client) error {
@@ -26,6 +18,21 @@ func WithTimeout(timeout time.Duration) ClientOpt {
 func WithHost(host string) ClientOpt {
 	return func(c *Client) error {
 		c.url = host
+		return nil
+	}
+}
+
+func WithLogger(log *slog.Logger, defaultLevel slog.Level) ClientOpt {
+	return WithRoundTripper(
+		NewLogRoundTripper(log.With(slog.String("context", "yaspeller client")), defaultLevel),
+	)
+}
+
+func WithRoundTripper(rt RoundTripper) ClientOpt {
+	return func(c *Client) error {
+		transport := c.client.Transport
+		rt.SetNext(transport)
+		c.client.Transport = rt
 		return nil
 	}
 }
