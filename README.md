@@ -21,11 +21,12 @@ make run-tests
 ```
 Все возможности API можно посмотреть в файле `tests/helpers_tests.go` и на странице Swagger.
 
-Пользователей три штуки:
+Пользователей четыре штуки:
 ```
 test1:password1
 test2:password2
 test3:password3
+test4:password4
 ```
 
 # Задача
