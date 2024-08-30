@@ -32,26 +32,26 @@ jobs:
           go mod tidy
           go test -v -coverprofile=coverage.txt -race -covermode=atomic ./...
 
-    integration-tests:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-        - name: Run All
-          run: |
-            make run
+      - name: Run All
+        run: |
+          make run
 
-        - name: Set up Go
-          uses: actions/setup-go@v5
-          with:
-            go-version: 'stable'
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
 
-        - name: Integration test
-          working-directory: ./tests
-          run: |
-            go mod tidy
-            go test -v ./...
+      - name: Integration test
+        working-directory: ./tests
+        run: |
+          go mod tidy
+          go test -v ./...
 
-        - name: Stop All
-          run: |
-            make stop
+      - name: Stop All
+        run: |
+          make stop
