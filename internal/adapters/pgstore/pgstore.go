@@ -16,7 +16,7 @@ type Store struct {
 }
 
 func New(ctx context.Context, log *slog.Logger, dbURL string) (*Store, error) {
-	s := &Store{log: log}
+	s := &Store{log: log.With(slog.String("context", "postgres store"))}
 
 	cfg, err := pgxpool.ParseConfig(dbURL)
 	if err != nil {
@@ -44,7 +44,7 @@ func (s *Store) Close() {
 
 func (s *Store) User() *UserRepoPG {
 	if s.userRepo == nil {
-		s.userRepo = NewUserRepo(s.db)
+		s.userRepo = NewUserRepo(s.db, s.log)
 	}
 	return s.userRepo
 }

@@ -28,7 +28,10 @@ var RequestIDHeader = "X-Request-Id"
 func NewLogRoundTripper(log *slog.Logger, defaultLevel slog.Level) *LogRoundTripper {
 	var buf [12]byte
 
-	rand.Read(buf[:])
+	_, err := rand.Read(buf[:])
+	if err != nil {
+		log.Error("rand read error", slog.Any("error", err))
+	}
 	prefix := base64.URLEncoding.EncodeToString(buf[:])
 
 	return &LogRoundTripper{

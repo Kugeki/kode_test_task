@@ -2,8 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"errors"
-	"github.com/Kugeki/kode_test_task/internal/domain"
 	"github.com/Kugeki/kode_test_task/internal/ports/rest/dto"
 	"log/slog"
 	"net/http"
@@ -43,15 +41,4 @@ func respondError(w http.ResponseWriter, code int, err error, log *slog.Logger) 
 func respondUnauthorized(w http.ResponseWriter, err error, log *slog.Logger) {
 	w.Header().Set("WWW-Authenticate", `Bearer realm="api"`)
 	respondError(w, http.StatusUnauthorized, err, log)
-}
-
-func respondGetError(w http.ResponseWriter, err error, log *slog.Logger) {
-	if errors.Is(err, domain.ErrNotFound) {
-		respondError(w, http.StatusNotFound, err, log)
-		return
-	}
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err, log)
-		return
-	}
 }

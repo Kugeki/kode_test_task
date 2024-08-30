@@ -4,15 +4,18 @@ import (
 	"context"
 	"errors"
 	"github.com/Kugeki/kode_test_task/internal/domain"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"log/slog"
 )
 
 type UserRepoPG struct {
-	db *pgxpool.Pool
+	db  *pgxpool.Pool
+	log *slog.Logger
 }
 
-func NewUserRepo(db *pgxpool.Pool) *UserRepoPG {
-	return &UserRepoPG{db: db}
+func NewUserRepo(db *pgxpool.Pool, log *slog.Logger) *UserRepoPG {
+	return &UserRepoPG{db: db, log: log.With(slog.String("repository", "user"))}
 }
 
 func (r *UserRepoPG) CreateUser(ctx context.Context, u *domain.User) error {
@@ -26,7 +29,11 @@ func (r *UserRepoPG) CreateUser(ctx context.Context, u *domain.User) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	defer func(tx pgx.Tx, ctx context.Context) {
+		if err := tx.Rollback(ctx); err != nil {
+			r.log.Error("transaction rollback error", slog.Any("error", err))
+		}
+	}(tx, ctx)
 
 	p := u.Password
 

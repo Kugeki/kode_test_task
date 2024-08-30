@@ -46,7 +46,7 @@ func JWTAuthMiddleware(log *slog.Logger, jwtSecretKey string) Middleware {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), ContextJWTClaimsKey, token.Claims)
+			ctx := context.WithValue(r.Context(), ContextJWTClaimsKey, token.Claims) //nolint:staticcheck
 
 			claims, ok := token.Claims.(jwt.MapClaims)
 			if !ok {
@@ -61,7 +61,7 @@ func JWTAuthMiddleware(log *slog.Logger, jwtSecretKey string) Middleware {
 				respondError(w, http.StatusInternalServerError, errors.New("can't get nickname from claims"), log)
 				return
 			}
-			ctx = context.WithValue(ctx, ContextUsernameKey, username)
+			ctx = context.WithValue(ctx, ContextUsernameKey, username) //nolint:staticcheck
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

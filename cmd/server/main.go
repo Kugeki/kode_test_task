@@ -101,6 +101,10 @@ func main() {
 		rest.WithWriteTimeout(restWriteTimeout),
 	}
 	restServer, err := rest.NewServer(router, log, restOpts...)
+	if err != nil {
+		log.Error("can't create rest server", slog.Any("error", err))
+		return
+	}
 
 	go func() {
 		err := restServer.Run()
