@@ -50,7 +50,7 @@ jobs:
         working-directory: ./tests
         run: |
           go mod tidy
-          go test -v ./...
+          go test -count=1 -v ./...
 
       - name: Stop All
         run: |
