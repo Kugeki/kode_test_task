@@ -1,0 +1,11 @@
+services:
+  integration-tests:
+    build: ./tests
+    container_name: integration-tests
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      SERVER_URL: http://server:8080
+    links:
+      - server

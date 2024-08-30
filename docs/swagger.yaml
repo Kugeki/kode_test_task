@@ -1,0 +1,209 @@
+definitions:
+  dto.CreateNoteReq:
+    properties:
+      content:
+        minLength: 1
+        type: string
+    type: object
+  dto.CreateNoteResp:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+    type: object
+  dto.GetNotesResp:
+    properties:
+      notes:
+        items:
+          $ref: '#/definitions/dto.NoteDto'
+        type: array
+    type: object
+  dto.HTTPError:
+    properties:
+      error:
+        type: string
+    type: object
+  dto.LoginReq:
+    properties:
+      password:
+        minLength: 1
+        type: string
+      username:
+        minLength: 1
+        type: string
+    type: object
+  dto.LoginResp:
+    properties:
+      access_token:
+        type: string
+    type: object
+  dto.NoteDto:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+    type: object
+  dto.NoteSpellErrorResp:
+    properties:
+      error:
+        type: string
+      note_content:
+        type: string
+      spell_errors:
+        items:
+          $ref: '#/definitions/dto.SpellError'
+        type: array
+    type: object
+  dto.SpellError:
+    properties:
+      code:
+        type: integer
+      col:
+        type: integer
+      len:
+        type: integer
+      pos:
+        type: integer
+      row:
+        type: integer
+      s:
+        items:
+          type: string
+        type: array
+      word:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Create notes. Get your notes.
+  title: Note Service
+  version: 0.1.0
+paths:
+  /notes/:
+    get:
+      consumes:
+      - application/json
+      description: get notes for user
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Auth JWT Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetNotesResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+        "401":
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: Auth realm
+              type: string
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+      security:
+      - BearerAuth: []
+      summary: Get notes
+      tags:
+      - notes
+  /notes/create/:
+    post:
+      consumes:
+      - application/json
+      description: create a note for user
+      parameters:
+      - description: Create note
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateNoteReq'
+      - default: Bearer <Add access token here>
+        description: Auth JWT Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateNoteResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.NoteSpellErrorResp'
+        "401":
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: Auth realm
+              type: string
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+      security:
+      - BearerAuth: []
+      summary: Create a note
+      tags:
+      - notes
+  /users/login/:
+    post:
+      consumes:
+      - application/json
+      description: login for user
+      parameters:
+      - description: User to login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPError'
+      summary: Login
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

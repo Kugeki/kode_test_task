@@ -41,6 +41,20 @@ func (h *AuthHandler) SetupRoutes(r chi.Router) {
 	r.Post("/users/login/", h.Login())
 }
 
+// Login godoc
+//
+//	@Summary		Login
+//	@Description	login for user
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		dto.LoginReq	true	"User to login"
+//	@Success		200		{object}	dto.LoginResp
+//	@Failure		400		{object}	dto.HTTPError
+//	@Failure		401		{object}	dto.HTTPError
+//	@Failure		500		{object}	dto.HTTPError
+//
+//	@Router			/users/login/ [post]
 func (h *AuthHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()

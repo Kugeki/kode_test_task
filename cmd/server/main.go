@@ -147,6 +147,10 @@ func createUsers(ctx context.Context, uc *usecases.AuthUC) error {
 	if err != nil {
 		return err
 	}
+	err = uc.CreateUser(ctx, &domain.User{Name: "test4"}, "password4")
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

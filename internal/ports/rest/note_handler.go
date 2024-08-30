@@ -39,11 +39,29 @@ func (h *NoteHandler) SetupRoutes(r chi.Router) {
 	r.Group(func(r chi.Router) {
 		r.Use(JWTAuthMiddleware(h.log, h.jwtSecretKey))
 
-		r.Post("/notes/create", h.CreateNote())
+		r.Post("/notes/create/", h.CreateNote())
 		r.Get("/notes/", h.GetNotes())
 	})
 }
 
+// CreateNote godoc
+//
+//	@Summary		Create a note
+//	@Description	create a note for user
+//	@Tags			notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			note			body		dto.CreateNoteReq	true	"Create note"
+//	@Param			Authorization	header		string				true	"Auth JWT Token"	default(Bearer <Add access token here>)
+//	@Success		201				{object}	dto.CreateNoteResp
+//	@Failure		400				{object}	dto.NoteSpellErrorResp
+//	@Failure		401				{object}	dto.HTTPError
+//	@Failure		500				{object}	dto.HTTPError
+//
+//	@Header			401				{string}	WWW-Authenticate	"Auth realm"
+//
+//	@Router			/notes/create/ [post]
+//	@Security		BearerAuth
 func (h *NoteHandler) CreateNote() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -102,6 +120,23 @@ func (h *NoteHandler) CreateNote() http.HandlerFunc {
 	}
 }
 
+// GetNotes godoc
+//
+//	@Summary		Get notes
+//	@Description	get notes for user
+//	@Tags			notes
+//	@Accept			json
+//	@Produce		json
+//	@Param			Authorization	header		string	true	"Auth JWT Token"	default(Bearer <Add access token here>)
+//	@Success		200				{object}	dto.GetNotesResp
+//	@Failure		400				{object}	dto.HTTPError
+//	@Failure		401				{object}	dto.HTTPError
+//	@Failure		500				{object}	dto.HTTPError
+//
+//	@Header			401				{string}	WWW-Authenticate	"Auth realm"
+//
+//	@Router			/notes/ [get]
+//	@Security		BearerAuth
 func (h *NoteHandler) GetNotes() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
