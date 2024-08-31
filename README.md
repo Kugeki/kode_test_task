@@ -1,5 +1,7 @@
 # Тестовое задание в KODE
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/lmittmann/tint)](https://goreportcard.com/report/github.com/lmittmann/tint)
+
 # Проверяющим
 Запуск сервера:
 ```
@@ -28,6 +30,10 @@ test2:password2
 test3:password3
 test4:password4
 ```
+
+> [!CAUTION]
+> На Swagger-странице пароль и юзернейм могут поменятся местами
+> (`"password":...` будет сверху, а `"username":...` снизу.
 
 # Задача
 Необходимо спроектировать и реализовать на Golang сервис, 
